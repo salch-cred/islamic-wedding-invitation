@@ -44,6 +44,8 @@ export default {
       },
       fontFamily: {
         arabic: ['Amiri', 'serif'],
+        cinzel: ['Cinzel', 'serif'],
+        script: ['"Alex Brush"', '"Great Vibes"', 'cursive'],
         calligraphy: ['Great Vibes', 'cursive'],
         elegant: ['Cormorant Garamond', 'serif'],
         body: ['Poppins', 'sans-serif'],

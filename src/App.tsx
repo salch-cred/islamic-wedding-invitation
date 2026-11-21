@@ -1,8 +1,8 @@
 import React from 'react';
-import { FullScreenWeddingCard } from './components/FullScreenWeddingCard';
+import { VideoFlowWeddingCard } from './components/VideoFlowWeddingCard';
 
 export const App: React.FC = () => {
-  return <FullScreenWeddingCard />;
+  return <VideoFlowWeddingCard />;
 };
 
 export default App;
