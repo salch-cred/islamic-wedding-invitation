@@ -102,3 +102,14 @@
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
+@keyframes swingLantern {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(2deg);
+  }
+  75% {
+    transform: rotate(-2deg);
+  }
+}
