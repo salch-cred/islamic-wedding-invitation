@@ -12,7 +12,7 @@ import {
 import { weddingDetails } from '../data/weddingDetails';
 
 export const VideoFlowWeddingCard: React.FC = () => {
-  // Animation flow phases: 'closed' (envelope) -> 'opening' (video zoom) -> 'entered' (slides in arch)
+  // Flow states: 'closed' (envelope with wax seal) -> 'opening' (gate opening video) -> 'entered' (5 master slides)
   const [phase, setPhase] = useState<'closed' | 'opening' | 'entered'>('closed');
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean>(false);
@@ -21,53 +21,82 @@ export const VideoFlowWeddingCard: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  const totalSlides = 3;
-  const slideDurationMs = 7500; // 7.5 seconds per slide
+  // The 5 pristine master slides (100% watermark-free, accurate details, zero missing glyphs)
+  const slides = [
+    {
+      id: 0,
+      title: 'Bismillah & Dua',
+      image: '/images/final_slide1_bismillah.jpg',
+    },
+    {
+      id: 1,
+      title: 'Host Parents',
+      image: '/images/final_slide2_parents.jpg',
+    },
+    {
+      id: 2,
+      title: 'The Couple',
+      image: '/images/final_slide3_couple.jpg',
+    },
+    {
+      id: 3,
+      title: 'Nikah & Venue',
+      image: '/images/final_slide4_fountain.jpg',
+    },
+    {
+      id: 4,
+      title: 'Compliments & RSVP',
+      image: '/images/final_slide5_rsvp.jpg',
+    },
+  ];
 
-  // 1. Trigger the envelope opening video flow on user tap
+  const totalSlides = slides.length;
+  const slideDurationMs = 6500; // 6.5s auto progress per slide
+
+  // 1. Open the royal invitation on user tap
   const handleOpenEnvelope = () => {
     if (phase !== 'closed') return;
 
-    // Trigger golden rose petal confetti
+    // Trigger golden and crimson rose petal confetti
     try {
       confetti({
-        particleCount: 75,
-        spread: 80,
-        origin: { y: 0.65 },
+        particleCount: 80,
+        spread: 90,
+        origin: { y: 0.6 },
         colors: ['#D4AF37', '#801B2E', '#F3E5AB', '#FFFFFF', '#C5A059'],
       });
     } catch (e) {
       console.warn(e);
     }
 
-    // Start playing background wedding audio
+    // Play royal background audio
     if (audioRef.current) {
       audioRef.current.currentTime = 0;
       audioRef.current.play().catch(console.warn);
     }
 
-    // Switch to 'opening' phase and start the video intro
+    // Switch to gate opening video
     setPhase('opening');
 
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
       videoRef.current.play().catch(() => {
-        // Fallback transition if autoplay video is blocked
+        // Fallback transition if autoplay is blocked
         setTimeout(() => {
           setPhase('entered');
-        }, 2800);
+        }, 3000);
       });
     }
   };
 
-  // 2. Video ended handler (glides directly into the palace archway)
+  // 2. Video ended handler (moves straight into the master slides)
   const handleVideoEnded = () => {
     setPhase('entered');
     setCurrentSlide(0);
     setSlideProgress(0);
   };
 
-  // 3. Replay flow from beginning
+  // 3. Replay invitation from the closed gate
   const handleReplay = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     setPhase('closed');
@@ -75,7 +104,7 @@ export const VideoFlowWeddingCard: React.FC = () => {
     setSlideProgress(0);
   };
 
-  // 4. Music toggle (Only control permitted)
+  // 4. Music toggle (ONLY control permitted)
   const toggleMusic = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!audioRef.current) return;
@@ -89,11 +118,11 @@ export const VideoFlowWeddingCard: React.FC = () => {
     }
   };
 
-  // 5. Auto progress timer for slides once inside the palace archway
+  // 5. Auto progress timer for slides
   useEffect(() => {
     if (phase !== 'entered') return;
 
-    const interval = 50; // update progress every 50ms
+    const interval = 50;
     const step = (interval / slideDurationMs) * 100;
 
     const timer = setInterval(() => {
@@ -107,9 +136,9 @@ export const VideoFlowWeddingCard: React.FC = () => {
     }, interval);
 
     return () => clearInterval(timer);
-  }, [phase, currentSlide]);
+  }, [phase, currentSlide, totalSlides]);
 
-  // Touch / click slide navigation (left = prev, right = next)
+  // Touch / click slide navigation
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (phase !== 'entered') return;
 
@@ -117,7 +146,6 @@ export const VideoFlowWeddingCard: React.FC = () => {
     const clickX = e.clientX - rect.left;
     const width = rect.width;
 
-    // Don't change slide if user clicked on action buttons
     const target = e.target as HTMLElement;
     if (target.closest('button') || target.closest('a')) return;
 
@@ -154,30 +182,30 @@ export const VideoFlowWeddingCard: React.FC = () => {
 
   return (
     <main className="fixed inset-0 w-screen h-screen min-h-[100dvh] max-h-[100dvh] overflow-hidden bg-[#0d0205] flex items-center justify-center select-none font-body">
-      {/* Background Wedding Audio (Playing continuously) */}
+      {/* Background Wedding Audio Track */}
       <audio
         ref={audioRef}
-        src="/audio/wedding-audio.mp3"
+        src="/audio/luxe-video-audio.mp3"
         loop
         preload="auto"
       />
 
-      {/* Desktop Luxury Ambient Blur Backdrop */}
+      {/* Desktop Ambient Blurred Backdrop */}
       <div
         className="hidden md:block absolute inset-0 bg-cover bg-center filter blur-3xl opacity-25 scale-110 pointer-events-none"
-        style={{ backgroundImage: `url('/images/vframe_06.jpg')` }}
+        style={{ backgroundImage: `url('/images/final_slide1_bismillah.jpg')` }}
       />
       <div className="hidden md:block absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,#0d0205_90%)] pointer-events-none" />
 
       {/* ======================================================== */}
       {/* TOP FLOATING MUSIC OFF / MUSIC ON TOGGLE                 */}
-      {/* (The ONLY button control requested: No Pause, No Player) */}
+      {/* (ONLY permitted control: No Pause, No Video Scrubbers)   */}
       {/* ======================================================== */}
       <div className="fixed top-3 right-3 sm:top-5 sm:right-6 z-50">
         <button
           onClick={toggleMusic}
           title={isMuted ? 'Turn Music On' : 'Turn Music Off'}
-          className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-black/60 backdrop-blur-md border border-[#D4AF37]/50 shadow-[0_4px_20px_rgba(0,0,0,0.5)] text-white text-xs uppercase tracking-wider font-cinzel hover:bg-black/80 transition-all hover:scale-105 active:scale-95"
+          className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-black/60 backdrop-blur-md border border-[#D4AF37]/60 shadow-[0_4px_20px_rgba(0,0,0,0.5)] text-white text-xs uppercase tracking-wider font-cinzel hover:bg-black/80 transition-all hover:scale-105 active:scale-95 cursor-pointer"
         >
           {isMuted ? (
             <>
@@ -198,18 +226,18 @@ export const VideoFlowWeddingCard: React.FC = () => {
       {/* ======================================================== */}
       <div
         onClick={handleCardClick}
-        className="relative w-full h-full max-h-[100dvh] md:max-w-[430px] md:aspect-[9/16] md:h-[94vh] md:rounded-[36px] overflow-hidden shadow-[0_0_90px_rgba(212,175,55,0.35)] md:border-2 md:border-[#D4AF37]/50 bg-black flex flex-col justify-between"
+        className="relative w-full h-full max-h-[100dvh] md:max-w-[430px] md:aspect-[9/16] md:h-[94vh] md:rounded-[36px] overflow-hidden shadow-[0_0_90px_rgba(212,175,55,0.4)] md:border-2 md:border-[#D4AF37]/60 bg-black flex flex-col justify-between"
       >
         {/* ======================================================== */}
-        {/* 1. CLOSED ENVELOPE (Tap to Open)                         */}
+        {/* PHASE 1: CLOSED ENVELOPE / GATE (Tap to Open)            */}
         {/* ======================================================== */}
         {phase === 'closed' && (
           <div
             onClick={handleOpenEnvelope}
             className="relative w-full h-full cursor-pointer flex flex-col justify-between p-6 select-none bg-cover bg-center transition-all duration-500 animate-[fadeIn_0.5s_ease-out]"
-            style={{ backgroundImage: `url('/images/vframe_01.jpg')` }}
+            style={{ backgroundImage: `url('/images/scene_closed_gate.jpg')` }}
           >
-            {/* Top Callout */}
+            {/* Top Invocation */}
             <div className="w-full text-center pt-8 z-10">
               <p className="font-arabic text-xl sm:text-2xl text-[#801B2E] drop-shadow-sm font-bold">
                 بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
@@ -219,18 +247,17 @@ export const VideoFlowWeddingCard: React.FC = () => {
               </p>
             </div>
 
-            {/* Center Pulsing Wax Seal Prompt */}
+            {/* Center Pulsing Golden Wax Seal */}
             <div className="z-20 flex flex-col items-center">
               <div className="relative group flex items-center justify-center">
-                {/* Golden pulsing aura */}
-                <div className="absolute -inset-3 rounded-full bg-[#D4AF37]/30 blur-md animate-ping" />
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#801B2E]/90 border-2 border-[#D4AF37] flex items-center justify-center shadow-2xl transition-transform transform group-hover:scale-110 active:scale-95">
-                  <SparklesIcon size={32} className="text-[#D4AF37] animate-spin-slow" />
+                <div className="absolute -inset-4 rounded-full bg-[#D4AF37]/35 blur-md animate-ping" />
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#801B2E]/95 border-2 border-[#D4AF37] flex items-center justify-center shadow-2xl transition-transform transform group-hover:scale-110 active:scale-95">
+                  <SparklesIcon size={34} className="text-[#D4AF37] animate-spin-slow" />
                 </div>
               </div>
 
-              {/* Pulsing Button Badge */}
-              <div className="mt-5 px-6 py-2 rounded-full bg-[#801B2E]/95 border border-[#D4AF37]/60 shadow-[0_4px_20px_rgba(0,0,0,0.4)] text-[#FFFFF0] font-cinzel text-xs uppercase tracking-widest font-semibold flex items-center gap-2 animate-bounce">
+              {/* Pulsing Action Callout */}
+              <div className="mt-5 px-6 py-2 rounded-full bg-[#801B2E]/95 border border-[#D4AF37]/80 shadow-[0_4px_20px_rgba(0,0,0,0.5)] text-[#FFFFF0] font-cinzel text-xs uppercase tracking-widest font-bold flex items-center gap-2 animate-bounce">
                 <SparklesIcon size={14} className="text-[#D4AF37]" />
                 <span>Tap To Open</span>
                 <SparklesIcon size={14} className="text-[#D4AF37]" />
@@ -256,23 +283,23 @@ export const VideoFlowWeddingCard: React.FC = () => {
         )}
 
         {/* ======================================================== */}
-        {/* 2. OPENING ANIMATION SEQUENCE (Exact Video Flow)         */}
+        {/* PHASE 2: GATE OPENING ANIMATION (Clean Video Flow)       */}
         {/* ======================================================== */}
         {phase === 'opening' && (
           <div className="relative w-full h-full bg-black overflow-hidden flex items-center justify-center">
             <video
               ref={videoRef}
-              src="/video/intro-opening.mp4"
+              src="/video/gate-opening.mp4"
               playsInline
               muted
               autoPlay
               onEnded={handleVideoEnded}
               className="w-full h-full object-cover object-center pointer-events-none"
             />
-            {/* Fallback button if video finishes or user wants to skip immediately */}
+            {/* Quick entry button */}
             <button
               onClick={handleVideoEnded}
-              className="absolute bottom-6 px-4 py-1.5 rounded-full bg-black/50 backdrop-blur-md border border-[#D4AF37]/40 text-[#D4AF37] text-[11px] font-cinzel uppercase tracking-widest"
+              className="absolute bottom-6 px-5 py-2 rounded-full bg-black/60 backdrop-blur-md border border-[#D4AF37]/60 text-[#D4AF37] text-xs font-cinzel uppercase tracking-widest hover:bg-black/80 transition-all cursor-pointer"
             >
               Enter Invitation
             </button>
@@ -280,28 +307,35 @@ export const VideoFlowWeddingCard: React.FC = () => {
         )}
 
         {/* ======================================================== */}
-        {/* 3. INSIDE THE ROYAL ARCHWAY (Clean Plate + User Details)  */}
+        {/* PHASE 3: THE 5 MASTER SLIDES (100% Watermark Free)       */}
         {/* ======================================================== */}
         {phase === 'entered' && (
           <div className="relative w-full h-full overflow-hidden flex flex-col justify-between">
-            {/* The Authentic Palace Courtyard Arch Backdrop */}
-            <img
-              src="/images/vframe_06.jpg"
-              alt="Palace Courtyard Archway"
-              className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
-            />
+            {/* Master Slide Image Viewport */}
+            <div className="absolute inset-0 w-full h-full">
+              {slides.map((s, idx) => (
+                <img
+                  key={s.id}
+                  src={s.image}
+                  alt={s.title}
+                  className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-700 pointer-events-none ${
+                    idx === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                  }`}
+                />
+              ))}
+            </div>
 
-            {/* Top Story Progress Bars (Like Instagram Stories / WhatsApp Status) */}
+            {/* Top Story Progress Bars (5 segments with direct tap support) */}
             <div className="relative z-30 pt-3 px-3 flex gap-1.5 w-full">
-              {Array.from({ length: totalSlides }).map((_, idx) => (
+              {slides.map((s, idx) => (
                 <div
-                  key={idx}
+                  key={s.id}
                   onClick={(e) => {
                     e.stopPropagation();
                     setCurrentSlide(idx);
                     setSlideProgress(0);
                   }}
-                  className="h-1 flex-1 bg-black/30 rounded-full overflow-hidden cursor-pointer"
+                  className="h-1 flex-1 bg-black/35 rounded-full overflow-hidden cursor-pointer"
                 >
                   <div
                     className="h-full bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] transition-all duration-75"
@@ -318,223 +352,79 @@ export const VideoFlowWeddingCard: React.FC = () => {
               ))}
             </div>
 
-            {/* Central Illuminated Parchment Arch Content Container */}
-            <div className="relative z-20 flex-1 flex flex-col justify-center items-center px-4 pt-16 pb-36 text-center">
-              
-              {/* ================================================== */}
-              {/* SLIDE 0: WEDDING CEREMONY ANNOUNCEMENT             */}
-              {/* ================================================== */}
-              {currentSlide === 0 && (
-                <div className="w-full max-w-[340px] space-y-2 sm:space-y-2.5 animate-[fadeIn_0.5s_ease-out]">
-                  {/* Bismillah Calligraphy */}
-                  <div className="space-y-0.5">
-                    <p className="font-arabic text-xl sm:text-2xl text-[#801B2E] font-bold">
-                      بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-                    </p>
-                    <p className="font-cinzel text-[8.5px] sm:text-[9.5px] uppercase tracking-[0.2em] text-[#801B2E]/90 font-semibold">
-                      IN THE NAME OF ALLAH THE MOST BENEFICENT &amp; MOST MERCIFUL
-                    </p>
-                  </div>
+            {/* Bottom Floating Luxury Action Bar */}
+            <div className="relative z-30 pb-3 px-3 space-y-2">
+              {/* Luxury Action Pills Hub */}
+              <div className="grid grid-cols-4 gap-1.5 bg-black/45 backdrop-blur-md p-1.5 rounded-2xl border border-[#D4AF37]/40 shadow-[0_4px_25px_rgba(0,0,0,0.6)]">
+                {/* 1. Venue Directions */}
+                <a
+                  href={weddingDetails.event.googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-[#801B2E] text-white hover:bg-[#631526] transition-all text-[9.5px] font-cinzel font-semibold active:scale-95"
+                >
+                  <Location01Icon size={14} className="text-[#D4AF37]" />
+                  <span className="mt-0.5">Venue</span>
+                </a>
 
-                  {/* Solicit Text */}
-                  <div className="pt-1">
-                    <p className="font-cinzel text-[9.5px] sm:text-[10.5px] uppercase tracking-[0.16em] text-[#4A1521] font-semibold leading-relaxed">
-                      WE REQUEST THE HONOUR OF YOUR PRESENCE AT THE
-                    </p>
-                    <p className="font-script text-3xl sm:text-4xl text-[#801B2E] my-0.5 drop-shadow-sm">
-                      Wedding Ceremony
-                    </p>
-                    <p className="font-cinzel text-[9px] uppercase tracking-[0.18em] text-[#4A1521] font-semibold">
-                      OF THEIR BELOVED SON
-                    </p>
-                  </div>
+                {/* 2. WhatsApp RSVP */}
+                <a
+                  href={`https://wa.me/${weddingDetails.contact.whatsappDefaultNumber}?text=${whatsappMessage}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-[#134e3f] text-white hover:bg-[#0b3329] transition-all text-[9.5px] font-cinzel font-semibold active:scale-95"
+                >
+                  <WhatsappIcon size={14} className="text-emerald-300" />
+                  <span className="mt-0.5">RSVP</span>
+                </a>
 
-                  {/* Groom Name (Grand) */}
-                  <div className="py-1">
-                    <h1 className="font-cinzel text-xl sm:text-2xl font-black uppercase tracking-[0.08em] text-[#801B2E] drop-shadow-sm leading-tight">
-                      MOHAMMED SINAN
-                    </h1>
-                    <p className="font-elegant text-[10px] sm:text-[11px] text-[#4A1521] font-medium italic mt-0.5 leading-snug">
-                      (Grand S/o. Marhoom P. Hammabba Beary &amp; Marhoom Mohammad Abdullah Sheikh)
-                    </p>
-                  </div>
+                {/* 3. Add to Calendar */}
+                <button
+                  onClick={handleGoogleCalendar}
+                  className="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-white/90 text-[#801B2E] hover:bg-white transition-all text-[9.5px] font-cinzel font-semibold active:scale-95 cursor-pointer"
+                >
+                  <Calendar03Icon size={14} className="text-[#801B2E]" />
+                  <span className="mt-0.5">Calendar</span>
+                </button>
 
-                  {/* WITH separator */}
-                  <div className="flex items-center justify-center gap-2 py-0.5">
-                    <span className="w-6 h-[1px] bg-[#D4AF37]" />
-                    <span className="font-script text-2xl text-[#801B2E] font-bold">with</span>
-                    <span className="w-6 h-[1px] bg-[#D4AF37]" />
-                  </div>
+                {/* 4. Replay Invitation */}
+                <button
+                  onClick={handleReplay}
+                  className="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-[#D4AF37] text-[#801B2E] hover:bg-[#B8960C] hover:text-white transition-all text-[9.5px] font-cinzel font-bold active:scale-95 cursor-pointer"
+                >
+                  <RefreshIcon size={14} className="text-[#801B2E]" />
+                  <span className="mt-0.5">Replay</span>
+                </button>
+              </div>
 
-                  {/* Bride Name (Grand) */}
-                  <div className="py-1">
-                    <h2 className="font-cinzel text-xl sm:text-2xl font-black uppercase tracking-[0.08em] text-[#801B2E] drop-shadow-sm leading-tight">
-                      AYSHA ZOHARA
-                    </h2>
-                    <p className="font-elegant text-[10px] sm:text-[11px] text-[#4A1521] font-medium italic mt-0.5">
-                      (D/o. Abdul Lateef Ibrahim)
-                    </p>
-                  </div>
-
-                  {/* Parents Host Callout */}
-                  <div className="pt-1.5 border-t border-[#D4AF37]/50 mt-1">
-                    <p className="font-cinzel text-[11px] sm:text-xs font-bold text-[#801B2E] tracking-wider">
-                      Mrs. &amp; Mr. Mohammed Hussain Beary
-                    </p>
-                    <p className="font-elegant text-[10px] text-[#4A1521] font-semibold tracking-widest uppercase mt-0.5">
-                      Insha Allah
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* ================================================== */}
-              {/* SLIDE 1: NIKAH, DATE, TIME & VENUE                 */}
-              {/* ================================================== */}
-              {currentSlide === 1 && (
-                <div className="w-full max-w-[340px] space-y-2.5 sm:space-y-3 animate-[fadeIn_0.5s_ease-out]">
-                  {/* Year & Date Badge */}
-                  <div className="inline-block px-4 py-1 rounded-full bg-[#801B2E]/10 border border-[#D4AF37]/60">
-                    <p className="font-cinzel text-xs font-bold text-[#801B2E] tracking-[0.25em]">
-                      2026 • INSHA ALLAH
-                    </p>
-                  </div>
-
-                  {/* Nikah Title */}
-                  <div>
-                    <h3 className="font-cinzel text-base sm:text-lg font-bold tracking-[0.3em] text-[#801B2E]">
-                      N I K A H
-                    </h3>
-                    <p className="font-cinzel text-sm sm:text-base font-black text-[#801B2E] uppercase tracking-wider mt-1">
-                      THURSDAY, 31ST DECEMBER 2026
-                    </p>
-                    <p className="font-elegant text-xs text-[#4A1521] font-bold italic">
-                      (21st Rajab, 1448 H.)
-                    </p>
-                  </div>
-
-                  {/* Time & Dinner */}
-                  <div className="py-1 px-4 rounded-xl bg-white/60 backdrop-blur-sm border border-[#D4AF37]/40">
-                    <p className="font-cinzel text-xs sm:text-sm font-bold text-[#801B2E] tracking-wide">
-                      AFTER NAMAZ MAGHRIB
-                    </p>
-                    <p className="font-elegant text-xs sm:text-sm text-[#4A1521] font-semibold mt-0.5">
-                      Followed by Dinner till 10:00 p.m.
-                    </p>
-                  </div>
-
-                  {/* Venue Box */}
-                  <div className="space-y-1">
-                    <p className="font-cinzel text-[10px] uppercase tracking-[0.25em] text-[#4A1521] font-semibold">
-                      VENUE
-                    </p>
-                    <h4 className="font-cinzel text-base sm:text-lg font-black uppercase text-[#801B2E] tracking-wider">
-                      UNITY HALL
-                    </h4>
-                    <p className="font-elegant text-xs sm:text-sm text-[#4A1521] font-bold">
-                      Thokkottu, Mangalore
-                    </p>
-                  </div>
-
-                  {/* RSVP & Plaque */}
-                  <div className="pt-2 border-t border-[#D4AF37]/50">
-                    <p className="font-cinzel text-[10px] font-bold text-[#801B2E] tracking-widest uppercase">
-                      R.S.V.P: RELATIVES &amp; FRIENDS
-                    </p>
-                    <p className="font-cinzel text-[9.5px] font-extrabold text-[#4A1521] tracking-wider mt-1 px-3 py-1 rounded-md bg-[#D4AF37]/20 border border-[#D4AF37]/40 inline-block">
-                      YOUR PRESENCE &amp; DUA IS OUR GREATEST GIFT
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* ================================================== */}
-              {/* SLIDE 2: DUA, POETRY & ACTIONS                     */}
-              {/* ================================================== */}
-              {currentSlide === 2 && (
-                <div className="w-full max-w-[340px] space-y-2.5 sm:space-y-3 animate-[fadeIn_0.5s_ease-out]">
-                  {/* Dua */}
-                  <div className="p-2.5 rounded-xl bg-white/70 backdrop-blur-sm border border-[#D4AF37]/50 shadow-sm">
-                    <p className="font-elegant text-xs sm:text-sm text-[#801B2E] font-semibold italic leading-relaxed">
-                      "Oh Allah guide this marriage to the best of understanding, happiness, prosperity &amp; success - Ameen"
-                    </p>
-                  </div>
-
-                  {/* Left Flap Poetry (From original physical card) */}
-                  <div className="space-y-1">
-                    <p className="font-script text-2xl text-[#801B2E] leading-tight">
-                      A Day of Togetherness
-                    </p>
-                    <p className="font-elegant text-xs text-[#4A1521] font-semibold italic leading-relaxed">
-                      A moment of joy and emotions, a dream of every parent today a reality of us.
-                    </p>
-                  </div>
-
-                  {/* Residence */}
-                  <div className="text-[10px] text-[#4A1521] font-medium leading-tight">
-                    <p className="font-semibold text-[#801B2E]">Sugandh Palace, Nityanand Nagar,</p>
-                    <p>Ghatkopar (W), Mumbai-400 086.</p>
-                  </div>
-
-                  {/* Action Buttons Hub (hugeicons-react) */}
-                  <div className="grid grid-cols-2 gap-2 pt-2">
-                    {/* Google Maps Direction */}
-                    <a
-                      href={weddingDetails.event.googleMapsUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl bg-[#801B2E] text-white shadow-md hover:bg-[#631526] transition-all text-[11px] font-cinzel font-semibold active:scale-95"
-                    >
-                      <Location01Icon size={14} className="text-[#D4AF37]" />
-                      <span>Venue Map</span>
-                    </a>
-
-                    {/* WhatsApp RSVP */}
-                    <a
-                      href={`https://wa.me/${weddingDetails.contact.whatsappDefaultNumber}?text=${whatsappMessage}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl bg-[#134e3f] text-white shadow-md hover:bg-[#0b3329] transition-all text-[11px] font-cinzel font-semibold active:scale-95"
-                    >
-                      <WhatsappIcon size={14} className="text-emerald-300" />
-                      <span>RSVP Dua</span>
-                    </a>
-
-                    {/* Add to Google Calendar */}
-                    <button
-                      onClick={handleGoogleCalendar}
-                      className="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl bg-white/80 backdrop-blur-sm border border-[#D4AF37] text-[#801B2E] shadow-sm hover:bg-white transition-all text-[11px] font-cinzel font-semibold active:scale-95"
-                    >
-                      <Calendar03Icon size={14} className="text-[#801B2E]" />
-                      <span>Add Date</span>
-                    </button>
-
-                    {/* Replay Flow */}
-                    <button
-                      onClick={handleReplay}
-                      className="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl bg-[#D4AF37] text-[#801B2E] shadow-sm hover:bg-[#B8960C] hover:text-white transition-all text-[11px] font-cinzel font-bold active:scale-95"
-                    >
-                      <RefreshIcon size={14} className="text-[#801B2E]" />
-                      <span>Replay</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Bottom Subtle Navigation Cue */}
-            <div className="relative z-30 pb-3 px-4 flex items-center justify-between text-[#801B2E]/60 text-[10px] font-cinzel">
-              <span className="cursor-pointer" onClick={(e) => { e.stopPropagation(); setCurrentSlide((p) => (p > 0 ? p - 1 : totalSlides - 1)); setSlideProgress(0); }}>
-                ‹ Tap Left
-              </span>
-              <span className="tracking-widest uppercase font-bold text-[#801B2E]/80">
-                {currentSlide + 1} / {totalSlides}
-              </span>
-              <span className="cursor-pointer" onClick={(e) => { e.stopPropagation(); setCurrentSlide((p) => (p + 1) % totalSlides); setSlideProgress(0); }}>
-                Tap Right ›
-              </span>
+              {/* Bottom Subtle Navigation Indicators */}
+              <div className="px-2 flex items-center justify-between text-[#801B2E]/80 text-[10px] font-cinzel font-semibold">
+                <span
+                  className="cursor-pointer hover:underline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentSlide((p) => (p > 0 ? p - 1 : totalSlides - 1));
+                    setSlideProgress(0);
+                  }}
+                >
+                  ‹ Prev
+                </span>
+                <span className="tracking-widest uppercase text-[#801B2E] font-bold">
+                  {currentSlide + 1} / {totalSlides}
+                </span>
+                <span
+                  className="cursor-pointer hover:underline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentSlide((p) => (p + 1) % totalSlides);
+                    setSlideProgress(0);
+                  }}
+                >
+                  Next ›
+                </span>
+              </div>
             </div>
           </div>
         )}
