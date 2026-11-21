@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  body {
+    background-color: #FFFFF0;
+    color: #1A1A1A;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF8F5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.4);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.7);
+}
+
+/* Gold Shimmer Text Effect */
+.gold-shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #B8960C 0%,
+    #D4AF37 25%,
+    #FFF2B2 50%,
+    #D4AF37 75%,
+    #B8960C 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Royal Gold Border Glow */
+.gold-glow {
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.2), 0 0 50px rgba(212, 175, 55, 0.08);
+}
+
+.gold-glow-hover:hover {
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.35), 0 0 60px rgba(212, 175, 55, 0.15);
+}
+
+/* Wax Seal 3D effect */
+.wax-seal {
+  background: radial-gradient(circle at 35% 35%, #9E2A43 0%, #631526 55%, #350811 100%);
+  box-shadow: 
+    inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.6),
+    0 8px 20px rgba(99, 21, 38, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Islamic Arch Outline */
+.islamic-arch {
+  border-top-left-radius: 50% 30%;
+  border-top-right-radius: 50% 30%;
+}
+
+/* Animated Petal Falling */
+@keyframes petalFall {
+  0% {
+    transform: translate3d(0, -10vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate3d(100px, 110vh, 0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.falling-petal {
+  position: fixed;
+  pointer-events: none;
+  z-index: 20;
+  animation-name: petalFall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}

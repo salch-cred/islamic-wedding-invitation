@@ -1,0 +1,16 @@
+node_modules
+dist
+dist-ssr
+*.local
+.gemini
+.vscode
+.idea
+*.log
+
+# Unrelated sibling folders in Downloads
+paymate-new-
+paymate-new-/**
+provenode
+provenode/**
+skillmint
+skillmint/**
