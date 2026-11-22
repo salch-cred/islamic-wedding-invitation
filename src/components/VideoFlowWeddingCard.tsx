@@ -58,7 +58,7 @@ export const VideoFlowWeddingCard: React.FC = () => {
     }
   };
 
-  // 3. Audio toggle (The ONLY control permitted: Music On / Music Off)
+  // 3. Audio toggle (Music On / Music Off)
   const toggleMusic = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!videoRef.current) return;
@@ -92,129 +92,183 @@ export const VideoFlowWeddingCard: React.FC = () => {
   );
 
   return (
-    <main className="fixed inset-0 w-screen h-screen min-h-[100dvh] max-h-[100dvh] overflow-hidden bg-[#0d0205] flex items-center justify-center select-none font-body">
+    <main className="fixed inset-0 w-screen h-screen min-h-[100dvh] max-h-[100dvh] overflow-hidden bg-[radial-gradient(ellipse_at_center,_#200810_0%,_#100206_60%,_#050002_100%)] flex flex-col items-center justify-center select-none font-body p-2 sm:p-4">
       {/* Desktop Ambient Blurred Backdrop */}
       <div
-        className="hidden md:block absolute inset-0 bg-cover bg-center filter blur-3xl opacity-25 scale-110 pointer-events-none"
-        style={{ backgroundImage: `url('/images/final_slide1_bismillah.jpg')` }}
+        className="hidden md:block absolute inset-0 bg-cover bg-center filter blur-3xl opacity-20 scale-110 pointer-events-none"
+        style={{ backgroundImage: `url('/images/MASTER_TWIN_PILLARS_PERFECT.jpg')` }}
       />
-      <div className="hidden md:block absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,#0d0205_90%)] pointer-events-none" />
+      <div className="hidden md:block absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,#080103_90%)] pointer-events-none" />
 
       {/* ======================================================== */}
-      {/* TOP FLOATING MUSIC OFF / MUSIC ON TOGGLE                 */}
-      {/* (ONLY permitted control: No Pause, No Video Player UI)   */}
+      {/* MAIN CARD WRAPPER (Includes Card + External Desktop Dock) */}
       {/* ======================================================== */}
-      {isOpen && (
-        <div className="fixed top-3 right-3 sm:top-5 sm:right-6 z-50 animate-[fadeIn_0.5s_ease-out]">
-          <button
-            onClick={toggleMusic}
-            title={isMuted ? 'Turn Music On' : 'Turn Music Off'}
-            className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-black/60 backdrop-blur-md border border-[#D4AF37]/60 shadow-[0_4px_20px_rgba(0,0,0,0.5)] text-white text-xs uppercase tracking-wider font-cinzel hover:bg-black/80 transition-all hover:scale-105 active:scale-95 cursor-pointer"
-          >
-            {isMuted ? (
-              <>
-                <VolumeMute01Icon size={16} className="text-red-400" />
-                <span className="text-[10px] sm:text-xs text-red-300 font-medium">Music Off</span>
-              </>
-            ) : (
-              <>
-                <VolumeHighIcon size={16} className="text-[#D4AF37] animate-pulse" />
-                <span className="text-[10px] sm:text-xs text-[#D4AF37] font-medium">Music On</span>
-              </>
-            )}
-          </button>
-        </div>
-      )}
+      <div className="relative flex flex-col items-center justify-center w-full max-w-[430px] md:max-w-[450px]">
+        {/* ======================================================== */}
+        {/* 9:16 FULL WEDDING CARD CONTAINER                         */}
+        {/* ======================================================== */}
+        <div className="relative w-full h-[100dvh] md:h-[86vh] md:aspect-[9/16] md:rounded-[32px] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.95),0_0_50px_rgba(212,175,55,0.35)] md:border-2 md:border-[#D4AF37]/75 bg-black flex flex-col justify-between">
+          
+          {/* ======================================================== */}
+          {/* MUSIC ON / OFF TOGGLE                                    */}
+          {/* (Anchored neatly INSIDE the card container at top right)  */}
+          {/* ======================================================== */}
+          {isOpen && (
+            <div className="absolute top-3.5 right-3.5 z-40 animate-[fadeIn_0.5s_ease-out]">
+              <button
+                onClick={toggleMusic}
+                title={isMuted ? 'Turn Music On' : 'Turn Music Off'}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/65 backdrop-blur-md border border-[#D4AF37]/70 shadow-[0_4px_20px_rgba(0,0,0,0.6)] text-white text-xs uppercase tracking-wider font-cinzel hover:bg-black/85 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+              >
+                {isMuted ? (
+                  <>
+                    <VolumeMute01Icon size={15} className="text-red-400" />
+                    <span className="text-[10px] text-red-300 font-medium">Music Off</span>
+                  </>
+                ) : (
+                  <>
+                    <VolumeHighIcon size={15} className="text-[#D4AF37] animate-pulse" />
+                    <span className="text-[10px] text-[#D4AF37] font-medium">Music On</span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
 
-      {/* ======================================================== */}
-      {/* MAIN 9:16 FULL SCREEN WEDDING CARD CONTAINER             */}
-      {/* ======================================================== */}
-      <div className="relative w-full h-full max-h-[100dvh] md:max-w-[430px] md:aspect-[9/16] md:h-[94vh] md:rounded-[36px] overflow-hidden shadow-[0_0_90px_rgba(212,175,55,0.4)] md:border-2 md:border-[#D4AF37]/60 bg-black flex flex-col justify-between">
-        
-        {/* ======================================================== */}
-        {/* 1. CLOSED LUXURY ENVELOPE (Pure Handcrafted Elegance)    */}
-        {/* ======================================================== */}
-        {!isOpen && (
-          <div
-            onClick={handleOpenInvitation}
-            className="relative w-full h-full cursor-pointer flex flex-col items-center justify-center select-none bg-cover bg-center transition-all duration-500 animate-[fadeIn_0.5s_ease-out] group"
-            style={{ backgroundImage: `url('/images/scene_closed_gate.jpg')` }}
-          >
-            {/* Center Natural Wax Seal Prompt */}
-            <div className="relative flex flex-col items-center pointer-events-none">
-              {/* Subtle royal golden shimmer halo around the wax seal heart */}
-              <div className="w-24 h-24 rounded-full border-2 border-[#D4AF37]/70 animate-ping opacity-35" />
-              
-              {/* Elegant Royal Hint positioned gently below the satin bow */}
-              <div className="mt-24 px-4 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-[#D4AF37]/70 shadow-[0_4px_20px_rgba(0,0,0,0.4)] text-[#FFFFF0] font-cinzel text-[11px] uppercase tracking-[0.22em] font-medium flex items-center gap-2 group-hover:scale-105 transition-transform">
-                <SparklesIcon size={13} className="text-[#D4AF37] animate-pulse" />
-                <span>Tap Wax Seal to Open</span>
-                <SparklesIcon size={13} className="text-[#D4AF37] animate-pulse" />
+          {/* ======================================================== */}
+          {/* 1. CLOSED LUXURY ENVELOPE (Pure Handcrafted Elegance)    */}
+          {/* ======================================================== */}
+          {!isOpen && (
+            <div
+              onClick={handleOpenInvitation}
+              className="relative w-full h-full cursor-pointer flex flex-col items-center justify-center select-none bg-cover bg-center transition-all duration-500 animate-[fadeIn_0.5s_ease-out] group"
+              style={{ backgroundImage: `url('/images/scene_closed_gate.jpg')` }}
+            >
+              {/* Center Natural Wax Seal Prompt */}
+              <div className="relative flex flex-col items-center pointer-events-none">
+                {/* Subtle royal golden shimmer halo around the wax seal heart */}
+                <div className="w-24 h-24 rounded-full border-2 border-[#D4AF37]/70 animate-ping opacity-35" />
+                
+                {/* Elegant Royal Hint positioned gently below the satin bow */}
+                <div className="mt-24 px-4 py-1.5 rounded-full bg-black/45 backdrop-blur-md border border-[#D4AF37]/70 shadow-[0_4px_20px_rgba(0,0,0,0.5)] text-[#FFFFF0] font-cinzel text-[11px] uppercase tracking-[0.22em] font-medium flex items-center gap-2 group-hover:scale-105 transition-transform">
+                  <SparklesIcon size={13} className="text-[#D4AF37] animate-pulse" />
+                  <span>Tap Wax Seal to Open</span>
+                  <SparklesIcon size={13} className="text-[#D4AF37] animate-pulse" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* 2. THE MASTER ANIMATED WEDDING VIDEO (48.5s)             */}
+          {/* ======================================================== */}
+          <div className={`relative w-full h-full bg-black ${isOpen ? 'block' : 'hidden'}`}>
+            <video
+              ref={videoRef}
+              src="/video/wedding-luxe-final.mp4"
+              playsInline
+              loop
+              className="w-full h-full object-cover object-center pointer-events-none"
+            />
+
+            {/* Mobile Only Floating Quick Action Bar (Hidden on Desktop) */}
+            <div className="md:hidden absolute bottom-2.5 left-3 right-3 z-30">
+              <div className="grid grid-cols-4 gap-1.5 bg-black/65 backdrop-blur-md p-1.5 rounded-2xl border border-[#D4AF37]/50 shadow-[0_4px_25px_rgba(0,0,0,0.7)]">
+                {/* 1. Venue Directions */}
+                <a
+                  href={weddingDetails.event.googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-black/40 border border-[#D4AF37]/30 text-white hover:border-[#D4AF37] transition-all text-[9.5px] font-cinzel font-semibold active:scale-95"
+                >
+                  <Location01Icon size={14} className="text-[#D4AF37]" />
+                  <span className="mt-0.5 text-[#F5E6C8]">Venue</span>
+                </a>
+
+                {/* 2. WhatsApp RSVP */}
+                <a
+                  href={`https://wa.me/${weddingDetails.contact.whatsappDefaultNumber}?text=${whatsappMessage}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-black/40 border border-[#D4AF37]/30 text-white hover:border-[#D4AF37] transition-all text-[9.5px] font-cinzel font-semibold active:scale-95"
+                >
+                  <WhatsappIcon size={14} className="text-[#D4AF37]" />
+                  <span className="mt-0.5 text-[#F5E6C8]">RSVP</span>
+                </a>
+
+                {/* 3. Add to Calendar */}
+                <button
+                  onClick={handleGoogleCalendar}
+                  className="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-black/40 border border-[#D4AF37]/30 text-white hover:border-[#D4AF37] transition-all text-[9.5px] font-cinzel font-semibold active:scale-95 cursor-pointer"
+                >
+                  <Calendar03Icon size={14} className="text-[#D4AF37]" />
+                  <span className="mt-0.5 text-[#F5E6C8]">Calendar</span>
+                </button>
+
+                {/* 4. Replay Video */}
+                <button
+                  onClick={handleReplay}
+                  className="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-black/40 border border-[#D4AF37]/30 text-white hover:border-[#D4AF37] transition-all text-[9.5px] font-cinzel font-bold active:scale-95 cursor-pointer"
+                >
+                  <RefreshIcon size={14} className="text-[#D4AF37]" />
+                  <span className="mt-0.5 text-[#F5E6C8]">Replay</span>
+                </button>
               </div>
             </div>
           </div>
-        )}
 
-        {/* ======================================================== */}
-        {/* 2. THE ULTIMATE FULL ANIMATED WEDDING VIDEO (48.5s)      */}
-        {/* ======================================================== */}
-        <div className={`relative w-full h-full bg-black ${isOpen ? 'block' : 'hidden'}`}>
-          <video
-            ref={videoRef}
-            src="/video/wedding-luxe-final.mp4"
-            playsInline
-            loop
-            className="w-full h-full object-cover object-center pointer-events-none"
-          />
-
-          {/* Floating Luxury Quick Action Bar at Bottom */}
-          <div className="absolute bottom-3 left-3 right-3 z-30">
-            <div className="grid grid-cols-4 gap-1.5 bg-black/50 backdrop-blur-md p-1.5 rounded-2xl border border-[#D4AF37]/50 shadow-[0_4px_25px_rgba(0,0,0,0.6)]">
-              {/* 1. Venue Directions */}
-              <a
-                href={weddingDetails.event.googleMapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-[#801B2E] text-white hover:bg-[#631526] transition-all text-[9.5px] font-cinzel font-semibold active:scale-95"
-              >
-                <Location01Icon size={14} className="text-[#D4AF37]" />
-                <span className="mt-0.5">Venue</span>
-              </a>
-
-              {/* 2. WhatsApp RSVP */}
-              <a
-                href={`https://wa.me/${weddingDetails.contact.whatsappDefaultNumber}?text=${whatsappMessage}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-[#134e3f] text-white hover:bg-[#0b3329] transition-all text-[9.5px] font-cinzel font-semibold active:scale-95"
-              >
-                <WhatsappIcon size={14} className="text-emerald-300" />
-                <span className="mt-0.5">RSVP</span>
-              </a>
-
-              {/* 3. Add to Calendar */}
-              <button
-                onClick={handleGoogleCalendar}
-                className="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-white/90 text-[#801B2E] hover:bg-white transition-all text-[9.5px] font-cinzel font-semibold active:scale-95 cursor-pointer"
-              >
-                <Calendar03Icon size={14} className="text-[#801B2E]" />
-                <span className="mt-0.5">Calendar</span>
-              </button>
-
-              {/* 4. Replay Video */}
-              <button
-                onClick={handleReplay}
-                className="flex flex-col items-center justify-center py-1.5 px-1 rounded-xl bg-[#D4AF37] text-[#801B2E] hover:bg-[#B8960C] hover:text-white transition-all text-[9.5px] font-cinzel font-bold active:scale-95 cursor-pointer"
-              >
-                <RefreshIcon size={14} className="text-[#801B2E]" />
-                <span className="mt-0.5">Replay</span>
-              </button>
-            </div>
-          </div>
         </div>
 
+        {/* ======================================================== */}
+        {/* DESKTOP EXTERNAL ACTION DOCK                             */}
+        {/* (Rendered OUTSIDE and BELOW the card so bottom roses     */}
+        {/*  and plaque are 100% UNOBSTRUCTED on desktop!)           */}
+        {/* ======================================================== */}
+        {isOpen && (
+          <div className="hidden md:flex items-center justify-center gap-3 mt-4 z-30 animate-[fadeIn_0.5s_ease-out]">
+            {/* 1. Venue */}
+            <a
+              href={weddingDetails.event.googleMapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/75 backdrop-blur-md border border-[#D4AF37]/60 text-[#F5E6C8] hover:border-[#D4AF37] hover:bg-black/90 hover:scale-105 active:scale-95 transition-all text-xs font-cinzel tracking-wider shadow-[0_6px_25px_rgba(0,0,0,0.6)] cursor-pointer"
+            >
+              <Location01Icon size={15} className="text-[#D4AF37]" />
+              <span>Venue</span>
+            </a>
+
+            {/* 2. RSVP */}
+            <a
+              href={`https://wa.me/${weddingDetails.contact.whatsappDefaultNumber}?text=${whatsappMessage}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/75 backdrop-blur-md border border-[#D4AF37]/60 text-[#F5E6C8] hover:border-[#D4AF37] hover:bg-black/90 hover:scale-105 active:scale-95 transition-all text-xs font-cinzel tracking-wider shadow-[0_6px_25px_rgba(0,0,0,0.6)] cursor-pointer"
+            >
+              <WhatsappIcon size={15} className="text-[#D4AF37]" />
+              <span>RSVP</span>
+            </a>
+
+            {/* 3. Calendar */}
+            <button
+              onClick={handleGoogleCalendar}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/75 backdrop-blur-md border border-[#D4AF37]/60 text-[#F5E6C8] hover:border-[#D4AF37] hover:bg-black/90 hover:scale-105 active:scale-95 transition-all text-xs font-cinzel tracking-wider shadow-[0_6px_25px_rgba(0,0,0,0.6)] cursor-pointer"
+            >
+              <Calendar03Icon size={15} className="text-[#D4AF37]" />
+              <span>Calendar</span>
+            </button>
+
+            {/* 4. Replay */}
+            <button
+              onClick={handleReplay}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/75 backdrop-blur-md border border-[#D4AF37]/60 text-[#F5E6C8] hover:border-[#D4AF37] hover:bg-black/90 hover:scale-105 active:scale-95 transition-all text-xs font-cinzel tracking-wider shadow-[0_6px_25px_rgba(0,0,0,0.6)] cursor-pointer"
+            >
+              <RefreshIcon size={15} className="text-[#D4AF37]" />
+              <span>Replay</span>
+            </button>
+          </div>
+        )}
       </div>
     </main>
   );
