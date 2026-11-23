@@ -9,8 +9,8 @@ def main():
     print('Starting Master 6-Scene Wedding Video Rendering (720x1280, 1455 frames, 48.50s)...')
 
     video_orig = r'c:\Users\salma\Downloads\e4852513bffb73404f545dcbd474aa00_720w.mp4'
-    gate_video = r'public/video/gate-opening-clean.mp4'
-    audio_track = r'public/audio/luxe-video-audio.mp3'
+    gate_video = r'public/video/gate-opening-spotless.mp4'
+    audio_track = r'public/audio/new_wedding_audio.mp3'
     temp_mp4 = r'public/video/temp_master_6scenes.mp4'
     final_mp4 = r'public/video/wedding-luxe-final.mp4'
 
@@ -234,6 +234,9 @@ def main():
         'ffmpeg', '-y',
         '-i', temp_mp4,
         '-i', audio_track,
+        '-filter_complex', '[1:a]afade=t=out:st=46.2:d=2.5[a]',
+        '-map', '0:v',
+        '-map', '[a]',
         '-c:v', 'libx264',
         '-preset', 'slow',
         '-crf', '22',
