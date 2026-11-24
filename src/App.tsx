@@ -1,8 +1,8 @@
 import React from 'react';
-import { VideoFlowWeddingCard } from './components/VideoFlowWeddingCard';
+import { LuxuryWeddingCard } from './components/LuxuryWeddingCard';
 
 export const App: React.FC = () => {
-  return <VideoFlowWeddingCard />;
+  return <LuxuryWeddingCard />;
 };
 
 export default App;
